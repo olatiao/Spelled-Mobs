@@ -1,0 +1,68 @@
+{
+  "entity_id": "minecraft:spider",
+  "check_interval": 40,
+  "spells": [
+    {
+      "spell_id": "root",
+      "min_level": 1,
+      "max_level": 3,
+      "min_cast_time": 100,
+      "max_cast_time": 200,
+      "conditions": [
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 5.0
+        },
+        {
+          "type": "TARGET_TYPE",
+          "operator": "NOT_EQUALS",
+          "value": "minecraft:zombie"
+        },
+        {
+          "type": "HEALTH_PERCENTAGE",
+          "operator": "GREATER_THAN",
+          "numeric_value": 20.0
+        }
+      ]
+    },
+    {
+      "spell_id": "acid_orb",
+      "min_level": 1,
+      "max_level": 3,
+      "min_cast_time": 100,
+      "max_cast_time": 200,
+      "conditions": [
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 5.0
+        },
+        {
+          "type": "TARGET_TYPE",
+          "operator": "NOT_EQUALS",
+          "value": "minecraft:zombie"
+        },
+        {
+          "type": "HEALTH_PERCENTAGE",
+          "operator": "GREATER_THAN",
+          "numeric_value": 20.0
+        }
+      ]
+    },
+    {
+      "spell_id": "poison_spray",
+      "min_level": 1,
+      "max_level": 2,
+      "min_cast_time": 300,
+      "max_cast_time": 400,
+      "conditions": [
+        {
+          "type": "HEALTH_PERCENTAGE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 25.0
+        }
+      ]
+    }
+  ]
+}

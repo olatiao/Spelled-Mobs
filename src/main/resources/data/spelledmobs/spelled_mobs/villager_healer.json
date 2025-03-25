@@ -1,0 +1,160 @@
+{
+  "entity_id": "minecraft:villager",
+  "check_interval": 30,
+  "spells": [
+    {
+      "spell_id": "heal",
+      "min_level": 1,
+      "max_level": 3,
+      "min_cast_time": 200,
+      "max_cast_time": 300,
+      "conditions": [
+        {
+          "type": "TARGET_TYPE",
+          "operator": "EQUALS",
+          "value": "minecraft:villager"
+        },
+        {
+          "type": "TARGET_HEALTH",
+          "operator": "LESS_THAN",
+          "numeric_value": 16.0
+        },
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 8.0
+        },
+        {
+          "type": "ENTITY_NAME",
+          "operator": "CONTAINS",
+          "value": "治疗师"
+        }
+      ]
+    },
+    {
+      "spell_id": "heal",
+      "min_level": 1,
+      "max_level": 2,
+      "min_cast_time": 300,
+      "max_cast_time": 400,
+      "conditions": [
+        {
+          "type": "TARGET_TYPE",
+          "operator": "EQUALS",
+          "value": "minecraft:player"
+        },
+        {
+          "type": "TARGET_HEALTH",
+          "operator": "LESS_THAN",
+          "numeric_value": 10.0
+        },
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 5.0
+        },
+        {
+          "type": "TIME_OF_DAY",
+          "operator": "GREATER_THAN",
+          "numeric_value": 6000.0
+        },
+        {
+          "type": "TIME_OF_DAY",
+          "operator": "LESS_THAN",
+          "numeric_value": 18000.0
+        }
+      ]
+    },
+    {
+      "spell_id": "magic_missile",
+      "min_level": 1,
+      "max_level": 2,
+      "min_cast_time": 200,
+      "max_cast_time": 300,
+      "conditions": [
+        {
+          "type": "TARGET_TYPE",
+          "operator": "EQUALS",
+          "value": "minecraft:zombie"
+        },
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 10.0
+        },
+        {
+          "type": "WEATHER",
+          "operator": "EQUALS",
+          "value": "clear"
+        },
+        {
+          "type": "RANDOM_CHANCE",
+          "operator": "LESS_THAN",
+          "numeric_value": 50.0
+        }
+      ]
+    },
+    {
+      "spell_id": "barricade",
+      "min_level": 1,
+      "max_level": 1,
+      "min_cast_time": 400,
+      "max_cast_time": 600,
+      "conditions": [
+        {
+          "type": "HEALTH_PERCENTAGE",
+          "operator": "LESS_THAN",
+          "numeric_value": 40.0
+        },
+        {
+          "type": "TARGET_COUNT",
+          "operator": "GREATER_THAN",
+          "numeric_value": 2.0,
+          "extra_data": {
+            "radius": "16.0",
+            "target_type": "minecraft:zombie"
+          }
+        },
+        {
+          "type": "LIGHT_LEVEL",
+          "operator": "LESS_THAN",
+          "numeric_value": 10.0
+        }
+      ]
+    },
+    {
+      "spell_id": "protection",
+      "min_level": 1,
+      "max_level": 1,
+      "min_cast_time": 600,
+      "max_cast_time": 900,
+      "conditions": [
+        {
+          "type": "MOON_PHASE",
+          "operator": "EQUALS",
+          "numeric_value": 0.0
+        },
+        {
+          "type": "TIME_OF_DAY",
+          "operator": "GREATER_THAN",
+          "numeric_value": 13000.0
+        },
+        {
+          "type": "TARGET_TYPE",
+          "operator": "EQUALS",
+          "value": "minecraft:villager"
+        },
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 10.0
+        },
+        {
+          "type": "STATUS_EFFECT",
+          "operator": "NOT_EQUALS",
+          "value": "minecraft:resistance"
+        }
+      ]
+    }
+  ]
+}

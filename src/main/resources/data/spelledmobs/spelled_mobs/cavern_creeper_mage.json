@@ -1,0 +1,170 @@
+{
+  "entity_id": "minecraft:creeper",
+  "check_interval": 20,
+  "spells": [
+    {
+      "spell_id": "invisibility",
+      "min_level": 1,
+      "max_level": 1,
+      "min_cast_time": 300,
+      "max_cast_time": 400,
+      "conditions": [
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "GREATER_THAN",
+          "numeric_value": 15.0
+        },
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 32.0
+        },
+        {
+          "type": "LIGHT_LEVEL",
+          "operator": "LESS_THAN",
+          "numeric_value": 8.0
+        },
+        {
+          "type": "HEIGHT",
+          "operator": "LESS_THAN",
+          "numeric_value": 40.0
+        },
+        {
+          "type": "TARGET_TYPE",
+          "operator": "EQUALS",
+          "value": "minecraft:player"
+        }
+      ]
+    },
+    {
+      "spell_id": "blink",
+      "min_level": 1,
+      "max_level": 2,
+      "min_cast_time": 150,
+      "max_cast_time": 200,
+      "conditions": [
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN",
+          "numeric_value": 5.0
+        },
+        {
+          "type": "HEALTH_PERCENTAGE",
+          "operator": "GREATER_THAN",
+          "numeric_value": 80.0
+        },
+        {
+          "type": "BIOME",
+          "operator": "CONTAINS",
+          "value": "cave"
+        }
+      ]
+    },
+    {
+      "spell_id": "lightning_bolt",
+      "min_level": 1,
+      "max_level": 3,
+      "min_cast_time": 200,
+      "max_cast_time": 300,
+      "conditions": [
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "GREATER_THAN",
+          "numeric_value": 10.0
+        },
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 24.0
+        },
+        {
+          "type": "HEIGHT",
+          "operator": "LESS_THAN",
+          "numeric_value": 60.0
+        },
+        {
+          "type": "HEALTH_PERCENTAGE",
+          "operator": "GREATER_THAN",
+          "numeric_value": 50.0
+        },
+        {
+          "type": "STATUS_EFFECT",
+          "operator": "NOT_EQUALS",
+          "value": "minecraft:invisibility"
+        }
+      ]
+    },
+    {
+      "spell_id": "summon_skeleton",
+      "min_level": 1,
+      "max_level": 1,
+      "min_cast_time": 400,
+      "max_cast_time": 600,
+      "conditions": [
+        {
+          "type": "TARGET_COUNT",
+          "operator": "LESS_THAN",
+          "numeric_value": 3.0,
+          "extra_data": {
+            "radius": "24.0",
+            "target_type": "minecraft:skeleton"
+          }
+        },
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "GREATER_THAN",
+          "numeric_value": 8.0
+        },
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 32.0
+        },
+        {
+          "type": "LIGHT_LEVEL",
+          "operator": "LESS_THAN",
+          "numeric_value": 7.0
+        },
+        {
+          "type": "RANDOM_CHANCE",
+          "operator": "LESS_THAN",
+          "numeric_value": 40.0
+        }
+      ]
+    },
+    {
+      "spell_id": "firebolt",
+      "min_level": 2,
+      "max_level": 4,
+      "min_cast_time": 100,
+      "max_cast_time": 200,
+      "conditions": [
+        {
+          "type": "TARGET_TYPE",
+          "operator": "EQUALS",
+          "value": "minecraft:player"
+        },
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 16.0
+        },
+        {
+          "type": "IS_SNEAKING",
+          "operator": "EQUALS",
+          "value": "false"
+        },
+        {
+          "type": "IS_SPRINTING",
+          "operator": "EQUALS",
+          "value": "true"
+        },
+        {
+          "type": "LAST_DAMAGE_SOURCE",
+          "operator": "EQUALS",
+          "value": "player"
+        }
+      ]
+    }
+  ]
+}

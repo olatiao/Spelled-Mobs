@@ -1,0 +1,63 @@
+{
+  "entity_id": "minecraft:skeleton",
+  "check_interval": 30,
+  "spells": [
+    {
+      "spell_id": "lightning_bolt",
+      "min_level": 1,
+      "max_level": 4,
+      "min_cast_time": 80,
+      "max_cast_time": 160,
+      "conditions": [
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 16.0
+        },
+        {
+          "type": "TARGET_TYPE",
+          "operator": "EQUALS",
+          "value": "minecraft:player"
+        }
+      ]
+    },
+    {
+      "spell_id": "teleport",
+      "min_level": 1,
+      "max_level": 1,
+      "min_cast_time": 200,
+      "max_cast_time": 300,
+      "conditions": [
+        {
+          "type": "HEALTH_PERCENTAGE",
+          "operator": "LESS_THAN",
+          "numeric_value": 30.0
+        },
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN",
+          "numeric_value": 5.0
+        }
+      ]
+    },
+    {
+      "spell_id": "summon_skeleton",
+      "min_level": 1,
+      "max_level": 2,
+      "min_cast_time": 600,
+      "max_cast_time": 800,
+      "conditions": [
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "GREATER_THAN",
+          "numeric_value": 5.0
+        },
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 16.0
+        }
+      ]
+    }
+  ]
+}

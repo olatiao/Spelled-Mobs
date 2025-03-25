@@ -1,0 +1,45 @@
+{
+	"schemaVersion": 1,
+	"id": "spelledmobs",
+	"version": "${version}",
+	"name": "SpelledMobs",
+	"description": "A Fabric addon for Iron's Spells 'n Spellbooks that allows any mob to cast spells through data packs.",
+	"authors": [
+		"Spelled Mobs Team"
+	],
+	"contact": {
+		"homepage": "https://github.com/SpelledMobsTeam/SpelledMobs",
+		"sources": "https://github.com/SpelledMobsTeam/SpelledMobs"
+	},
+	"license": "MIT",
+	"icon": "assets/spelledmobs/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.spelledmobs.SpelledMobs"
+		],
+		"client": [
+			"com.spelledmobs.SpelledMobsClient"
+		],
+		"fabric-datagen": [
+			"com.spelledmobs.SpelledMobsDataGenerator"
+		]
+	},
+	"mixins": [
+		"spelledmobs.mixins.json",
+		{
+			"config": "spelledmobs.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.10",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*",
+		"irons_spellbooks": ">=1.20.1-2.0.0"
+	},
+	"suggests": {
+		"modmenu": "*"
+	}
+}

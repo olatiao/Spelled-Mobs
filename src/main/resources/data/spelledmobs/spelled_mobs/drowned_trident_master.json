@@ -1,0 +1,111 @@
+{
+  "entity_id": "minecraft:drowned",
+  "check_interval": 20,
+  "spells": [
+    {
+      "spell_id": "water_jet",
+      "min_level": 2,
+      "max_level": 4,
+      "min_cast_time": 100,
+      "max_cast_time": 200,
+      "conditions": [
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 15.0
+        },
+        {
+          "type": "IS_IN_WATER",
+          "operator": "EQUALS",
+          "value": "true"
+        },
+        {
+          "type": "HELD_ITEM",
+          "operator": "EQUALS",
+          "value": "minecraft:trident"
+        }
+      ]
+    },
+    {
+      "spell_id": "frost_step",
+      "min_level": 1,
+      "max_level": 3,
+      "min_cast_time": 200,
+      "max_cast_time": 300,
+      "conditions": [
+        {
+          "type": "HEALTH_PERCENTAGE",
+          "operator": "LESS_THAN",
+          "numeric_value": 50.0
+        },
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN",
+          "numeric_value": 8.0
+        },
+        {
+          "type": "WEATHER",
+          "operator": "EQUALS",
+          "value": "rain"
+        }
+      ]
+    },
+    {
+      "spell_id": "summon_drowned",
+      "min_level": 1,
+      "max_level": 2,
+      "min_cast_time": 400,
+      "max_cast_time": 600,
+      "conditions": [
+        {
+          "type": "TARGET_COUNT",
+          "operator": "LESS_THAN",
+          "numeric_value": 3.0,
+          "extra_data": {
+            "radius": "24.0",
+            "target_type": "minecraft:drowned"
+          }
+        },
+        {
+          "type": "MOON_PHASE",
+          "operator": "EQUALS",
+          "numeric_value": 0.0
+        },
+        {
+          "type": "TIME_OF_DAY",
+          "operator": "GREATER_THAN",
+          "numeric_value": 13000.0
+        },
+        {
+          "type": "RANDOM_CHANCE",
+          "operator": "LESS_THAN",
+          "numeric_value": 30.0
+        }
+      ]
+    },
+    {
+      "spell_id": "water_breathing",
+      "min_level": 1,
+      "max_level": 1,
+      "min_cast_time": 300,
+      "max_cast_time": 300,
+      "conditions": [
+        {
+          "type": "TARGET_TYPE",
+          "operator": "EQUALS",
+          "value": "minecraft:drowned"
+        },
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 12.0
+        },
+        {
+          "type": "STATUS_EFFECT",
+          "operator": "NOT_EQUALS",
+          "value": "minecraft:water_breathing"
+        }
+      ]
+    }
+  ]
+}
