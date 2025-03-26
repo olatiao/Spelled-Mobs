@@ -1,39 +1,102 @@
 {
-  "entity_id": "minecraft:zombie",
-  "check_interval": 40,
+  "entityId": "minecraft:zombie",
+  "checkInterval": 30,
   "spells": [
     {
-      "spell_id": "irons_spellbooks:fireball",
-      "min_level": 1,
-      "max_level": 3,
-      "min_cast_time": 100,
-      "max_cast_time": 200,
+      "spellId": "raise_dead",
+      "minLevel": 1,
+      "maxLevel": 3,
+      "minCastTime": 120,
+      "maxCastTime": 200,
+      "chance": 0.65,
+      "weight": 3,
       "conditions": [
         {
           "type": "TARGET_DISTANCE",
           "operator": "LESS_THAN_OR_EQUALS",
-          "numeric_value": 12.0
-        },
-        {
-          "type": "HEALTH_PERCENTAGE",
-          "operator": "GREATER_THAN",
-          "numeric_value": 25.0
+          "numeric_value": 10.0
         }
       ]
     },
     {
-      "spell_id": "irons_spellbooks:ice_block",
-      "min_level": 1,
-      "max_level": 2,
-      "min_cast_time": 300,
-      "max_cast_time": 400,
+      "spellId": "lightning_lance",
+      "minLevel": 1,
+      "maxLevel": 2,
+      "minCastTime": 180,
+      "maxCastTime": 240,
+      "chance": 0.7,
+      "weight": 4,
       "conditions": [
         {
-          "type": "HEALTH_PERCENTAGE",
+          "type": "TARGET_DISTANCE",
+          "operator": "GREATER_THAN",
+          "numeric_value": 5.0
+        },
+        {
+          "type": "TARGET_DISTANCE",
           "operator": "LESS_THAN_OR_EQUALS",
-          "numeric_value": 25.0
+          "numeric_value": 16.0
+        }
+      ]
+    },
+    {
+      "spellId": "devour",
+      "minLevel": 1,
+      "maxLevel": 1,
+      "minCastTime": 300,
+      "maxCastTime": 400,
+      "chance": 0.5,
+      "weight": 2,
+      "conditions": [
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN",
+          "numeric_value": 6.0
+        },
+        {
+          "type": "HEALTH_PERCENTAGE",
+          "operator": "GREATER_THAN",
+          "numeric_value": 60.0
+        }
+      ]
+    },
+    {
+      "spellId": "ray_of_siphoning",
+      "minLevel": 1,
+      "maxLevel": 1,
+      "minCastTime": 800,
+      "maxCastTime": 1200,
+      "chance": 0.3,
+      "weight": 1,
+      "conditions": [
+        {
+          "type": "TARGET_COUNT",
+          "operator": "LESS_THAN",
+          "numeric_value": 3.0,
+          "extra_data": {
+            "radius": 16.0,
+            "target_type": "minecraft:zombie"
+          }
+        },
+        {
+          "type": "WEATHER",
+          "operator": "EQUALS",
+          "value": "rain"
+        },
+        {
+          "type": "RANDOM_CHANCE",
+          "operator": "LESS_THAN",
+          "numeric_value": 40.0
         }
       ]
     }
-  ]
+  ],
+  "settings": {
+    "minLevel": 1,
+    "maxLevel": 3,
+    "baseCooldown": 150,
+    "searchRadius": 16.0,
+    "maxTargets": 2,
+    "targetPriority": ["player", "villager", "iron_golem", "other"]
+  }
 }

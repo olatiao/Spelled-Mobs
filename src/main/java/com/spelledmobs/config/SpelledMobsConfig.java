@@ -8,87 +8,84 @@ import com.spelledmobs.SpelledMobs;
 public class SpelledMobsConfig {
     // 是否启用调试日志
     private static boolean debugLogging = false;
-    
+
+    // 是否启用命令反馈
+    private static boolean commandFeedback = true;
+
     // 是否显示施法特效
     private static boolean showCastingEffects = true;
-    
-    // 是否启用命令反馈
-    private static boolean enableCommandFeedback = true;
-    
+
     // 最大检查距离
-    private static int maxCheckDistance = 128;
-    
+    private static int maxCheckDistance = 64;
+
     /**
-     * 初始化默认配置
-     */
-    public static void init() {
-        // TODO: 实现配置文件加载
-        SpelledMobs.LOGGER.info("加载配置...");
-    }
-    
-    /**
-     * 检查是否启用调试日志
-     * @return 是否启用调试日志
+     * 获取是否启用调试日志
      */
     public static boolean isDebugLoggingEnabled() {
         return debugLogging;
     }
-    
+
     /**
      * 设置是否启用调试日志
+     *
      * @param enabled 是否启用
      */
     public static void setDebugLogging(boolean enabled) {
         debugLogging = enabled;
+        SpelledMobs.LOGGER.info("调试日志已{}", enabled ? "启用" : "禁用");
     }
-    
+
     /**
-     * 检查是否显示施法特效
-     * @return 是否显示施法特效
+     * 获取是否启用命令反馈
      */
-    public static boolean shouldShowCastingEffects() {
+    public static boolean isCommandFeedbackEnabled() {
+        return commandFeedback;
+    }
+
+    /**
+     * 设置是否启用命令反馈
+     *
+     * @param enabled 是否启用
+     */
+    public static void setCommandFeedback(boolean enabled) {
+        commandFeedback = enabled;
+        SpelledMobs.LOGGER.info("命令反馈已{}", enabled ? "启用" : "禁用");
+    }
+
+    /**
+     * 获取是否显示施法特效
+     */
+    public static boolean showCastingEffects() {
         return showCastingEffects;
     }
-    
+
     /**
      * 设置是否显示施法特效
+     *
      * @param show 是否显示
      */
     public static void setShowCastingEffects(boolean show) {
         showCastingEffects = show;
     }
-    
-    /**
-     * 检查是否启用命令反馈
-     * @return 是否启用命令反馈
-     */
-    public static boolean isCommandFeedbackEnabled() {
-        return enableCommandFeedback;
-    }
-    
-    /**
-     * 设置是否启用命令反馈
-     * @param enabled 是否启用
-     */
-    public static void setCommandFeedback(boolean enabled) {
-        enableCommandFeedback = enabled;
-    }
-    
+
     /**
      * 获取最大检查距离
-     * @return 最大检查距离
      */
     public static int getMaxCheckDistance() {
         return maxCheckDistance;
     }
-    
+
     /**
      * 设置最大检查距离
-     * @param distance 距离
+     * 
+     * @param distance 距离，1-256之间
      */
     public static void setMaxCheckDistance(int distance) {
-        if (distance > 0) {
-            maxCheckDistance = distance;
+        if (distance < 1 || distance > 256) {
+            SpelledMobs.LOGGER.warn("尝试设置无效的检查距离: {}，有效范围为1-256", distance);
+            return;
         }
+        maxCheckDistance = distance;
+        SpelledMobs.LOGGER.info("最大检查距离已设置为: {}", distance);
     }
-} 
+}

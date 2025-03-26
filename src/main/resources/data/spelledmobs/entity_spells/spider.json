@@ -1,0 +1,107 @@
+{
+  "entityId": "minecraft:spider",
+  "checkInterval": 30,
+  "spells": [
+    {
+      "spellId": "poison_arrow",
+      "minLevel": 1,
+      "maxLevel": 1,
+      "minCastTime": 300,
+      "maxCastTime": 400,
+      "chance": 0.7,
+      "weight": 3,
+      "conditions": [
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 6.0
+        },
+        {
+          "type": "HEALTH_PERCENTAGE",
+          "operator": "GREATER_THAN",
+          "numeric_value": 50.0
+        }
+      ]
+    },
+    {
+      "spellId": "spider_aspect",
+      "minLevel": 1,
+      "maxLevel": 2,
+      "minCastTime": 240,
+      "maxCastTime": 360,
+      "chance": 0.6,
+      "weight": 2,
+      "conditions": [
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN_OR_EQUALS",
+          "numeric_value": 8.0
+        },
+        {
+          "type": "TARGET_TYPE",
+          "operator": "NOT_EQUALS",
+          "value": "minecraft:spider"
+        }
+      ]
+    },
+    {
+      "spellId": "root",
+      "minLevel": 1,
+      "maxLevel": 1,
+      "minCastTime": 180,
+      "maxCastTime": 300,
+      "chance": 0.8,
+      "weight": 4,
+      "conditions": [
+        {
+          "type": "TARGET_DISTANCE",
+          "operator": "LESS_THAN",
+          "numeric_value": 5.0
+        },
+        {
+          "type": "IS_ON_FIRE",
+          "operator": "NOT_EQUALS",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "spellId": "poison_breath",
+      "minLevel": 1,
+      "maxLevel": 1,
+      "minCastTime": 600,
+      "maxCastTime": 900,
+      "chance": 0.3,
+      "weight": 1,
+      "conditions": [
+        {
+          "type": "HEALTH_PERCENTAGE",
+          "operator": "LESS_THAN",
+          "numeric_value": 30.0
+        },
+        {
+          "type": "TARGET_COUNT",
+          "operator": "LESS_THAN",
+          "numeric_value": 3.0,
+          "extra_data": {
+            "radius": 16.0,
+            "target_type": "minecraft:spider"
+          }
+        },
+        {
+          "type": "RANDOM_CHANCE",
+          "operator": "LESS_THAN",
+          "numeric_value": 50.0
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "minLevel": 1,
+    "maxLevel": 3,
+    "baseCooldown": 200,
+    "searchRadius": 16.0,
+    "maxTargets": 1,
+    "targetPriority": ["player", "villager", "iron_golem", "other"]
+  }
+}

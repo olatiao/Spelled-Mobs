@@ -1,6 +1,6 @@
 # Spelled Mobs
 
-一个基于 Fabric 的 Minecraft 模组，可以通过数据包为任何生物添加施法能力，作为 [Iron's Spells 'n Spellbooks](https://www.curseforge.com/minecraft/mc-mods/irons-spells-n-spellbooks) 的附属模组。
+一个基于 Forge 的 Minecraft 模组，可以通过数据包为任何生物添加施法能力，作为 [Iron's Spells 'n Spellbooks](https://www.curseforge.com/minecraft/mc-mods/irons-spells-n-spellbooks) 的附属模组。
 
 ## 简介
 
@@ -19,13 +19,6 @@ Spelled Mobs 允许你通过简单的 JSON 配置文件，给游戏中的任何�
 - 可设置施法冷却时间范围
 - 支持多个法术配置，并可设置优先级
 - 命令系统用于管理和调试
-
-## 安装
-
-1. 安装 [Fabric Loader](https://fabricmc.net/use/)
-2. 安装 [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
-3. 安装 [Iron's Spells 'n Spellbooks](https://www.curseforge.com/minecraft/mc-mods/irons-spells-n-spellbooks)
-4. 下载并安装本模组
 
 ## 数据包配置
 
@@ -146,7 +139,7 @@ Spelled Mobs 允许你通过简单的 JSON 配置文件，给游戏中的任何�
 - `/spelledmobs check <spell_id>` - 检查法术ID是否有效
 - `/spelledmobs cast <entity> <spell_id> <level> [<target>]` - 让实体施放法术
 - `/spelledmobs config debugLogging <true|false>` - 设置调试日志
-- `/spelledmobs config showEffects <true|false>` - 设置施法特效
+- `/spelledmobs config commandFeedback <true|false>` - 设置命令反馈
 - `/spelledmobs config maxCheckDistance <value>` - 设置最大检查距离
 
 ## 法术ID参考
