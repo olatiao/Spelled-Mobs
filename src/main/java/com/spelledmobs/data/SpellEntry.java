@@ -117,7 +117,8 @@ public class SpellEntry {
         }
 
         for (SpellCondition condition : conditions) {
-            if (!condition.check(context)) {
+            boolean result = condition.check(context);
+            if (!result) {
                 return false;
             }
         }

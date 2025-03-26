@@ -41,16 +41,30 @@ public class SpellCastingManager {
      */
     public void onServerTick(ServerLevel level) {
         // 如果Iron's Spells未加载，跳过处理
-        if (!SpelledMobs.isIronsSpellsLoaded()) {
+        if (!IronsSpellsCompat.isIronsSpellsLoaded() || !IronsSpellsCompat.isInitialized()) {
             return;
         }
 
         // 遍历所有实体
-        level.getAllEntities().forEach(entity -> {
+        int entityCount = 0;
+        int entityWithSpellsCount = 0;
+
+        for (var entity : level.getAllEntities()) {
             if (entity instanceof LivingEntity livingEntity) {
-                updateEntitySpellCasting(livingEntity);
+                entityCount++;
+                if (spellCastingData.hasSpells(livingEntity)) {
+                    entityWithSpellsCount++;
+                    updateEntitySpellCasting(livingEntity);
+                }
             }
-        });
+        }
+
+        // 每100刻（5秒）记录一次统计信息
+        if (level.getGameTime() % 100 == 0 && entityWithSpellsCount > 0) {
+            SpelledMobs.LOGGER.info(
+                    "[SpelledMobs] [施法统计] 世界: {}, 检查生物: {}, 可施法生物: {}",
+                    level.dimension().location(), entityCount, entityWithSpellsCount);
+        }
 
         // 清理不再存在的实体的冷却数据
         cooldowns.entrySet().removeIf(entry -> !entry.getKey().isAlive());
@@ -63,9 +77,13 @@ public class SpellCastingManager {
      */
     private void updateEntitySpellCasting(LivingEntity entity) {
         // 检查是否已加载Iron's Spells
-        if (!SpelledMobs.isIronsSpellsLoaded()) {
+        if (!IronsSpellsCompat.isIronsSpellsLoaded() || !IronsSpellsCompat.isInitialized()) {
             return;
         }
+
+        // 获取实体名称，用于日志
+        String entityName = entity.getName().getString();
+        String entityType = entity.getType().toString();
 
         // 检查实体是否可以施法
         if (!spellCastingData.hasSpells(entity)) {
@@ -81,19 +99,39 @@ public class SpellCastingManager {
         // 检查是否有法术可以施放
         SpellEntry spellEntry = spellCastingData.getNextSpellToCast(entity);
         if (spellEntry == null) {
+            if (SpelledMobsConfig.isDebugLoggingEnabled() && entity.level().getGameTime() % 100 == 0) {
+                SpelledMobs.LOGGER.debug("[SpelledMobs] [{}:{}] 没有可施放的法术", entityType, entityName);
+            }
             return;
         }
 
         // 检查法术冷却时间
         if (entityCooldowns.getOrDefault(spellEntry.getSpellId(), 0) > 0) {
+            if (SpelledMobsConfig.isDebugLoggingEnabled() && entity.level().getGameTime() % 100 == 0) {
+                SpelledMobs.LOGGER.debug("[SpelledMobs] [{}:{}] 法术 {} 正在冷却中: {} tick",
+                        entityType, entityName,
+                        spellEntry.getSpellId(),
+                        entityCooldowns.get(spellEntry.getSpellId()));
+            }
             return;
         }
 
         // 查找目标
         LivingEntity target = TargetFinder.findTarget(entity, DEFAULT_SEARCH_RADIUS);
         if (target == null) {
+            if (SpelledMobsConfig.isDebugLoggingEnabled() && entity.level().getGameTime() % 100 == 0) {
+                SpelledMobs.LOGGER.debug("[SpelledMobs] [{}:{}] 未找到目标，无法施法", entityType, entityName);
+            }
             return;
         }
+
+        String targetName = target.getName().getString();
+        String targetType = target.getType().toString();
+
+        SpelledMobs.LOGGER.info("[SpelledMobs] [{}:{}] 找到目标: [{}:{}]，准备施放法术: {}",
+                entityType, entityName,
+                targetType, targetName,
+                spellEntry.getSpellId());
 
         // 确定法术等级
         int level = spellEntry.getMinLevel();
@@ -105,23 +143,25 @@ public class SpellCastingManager {
         boolean success = IronsSpellsCompat.castSpell(entity, target, entity.level(), spellEntry.getSpellId(), level);
 
         if (success) {
-            // 设置冷却时间
-            int cooldown = spellEntry.getMinCastTime();
+            // 设置冷却时间 - 减少测试时的冷却时间
+            int originalCooldown = spellEntry.getMinCastTime();
             if (spellEntry.getMaxCastTime() > spellEntry.getMinCastTime()) {
-                cooldown += RANDOM.nextInt(spellEntry.getMaxCastTime() - spellEntry.getMinCastTime() + 1);
+                originalCooldown += RANDOM.nextInt(spellEntry.getMaxCastTime() - spellEntry.getMinCastTime() + 1);
             }
+
+            // 测试模式下冷却时间减半
+            int cooldown = originalCooldown / 2;
             entityCooldowns.put(spellEntry.getSpellId(), cooldown);
 
-            if (SpelledMobsConfig.isDebugLoggingEnabled()) {
-                SpelledMobs.LOGGER.info("{} 成功施放法术 {} (等级 {}) 目标: {}",
-                        entity.getName().getString(),
-                        spellEntry.getSpellId(),
-                        level,
-                        target.getName().getString());
-            }
-        } else if (SpelledMobsConfig.isDebugLoggingEnabled()) {
-            SpelledMobs.LOGGER.warn("{} 施放法术 {} 失败",
-                    entity.getName().getString(),
+            SpelledMobs.LOGGER.info("[SpelledMobs] [{}:{}] 成功施放法术 {} (等级 {}) 目标: [{}:{}]，冷却时间: {} tick",
+                    entityType, entityName,
+                    spellEntry.getSpellId(),
+                    level,
+                    targetType, targetName,
+                    cooldown);
+        } else {
+            SpelledMobs.LOGGER.warn("[SpelledMobs] [{}:{}] 施放法术 {} 失败，请查看详细日志以了解原因",
+                    entityType, entityName,
                     spellEntry.getSpellId());
         }
     }
@@ -137,8 +177,8 @@ public class SpellCastingManager {
      */
     public boolean forceCastSpell(LivingEntity entity, LivingEntity target, String spellId, int level) {
         // 检查是否已加载Iron's Spells
-        if (!SpelledMobs.isIronsSpellsLoaded()) {
-            SpelledMobs.LOGGER.warn("尝试施放法术，但Iron's Spells模组未加载");
+        if (!IronsSpellsCompat.isIronsSpellsLoaded() || !IronsSpellsCompat.isInitialized()) {
+            SpelledMobs.LOGGER.warn("[SpelledMobs] 尝试施放法术，但Iron's Spells模组未加载或未初始化");
             return false;
         }
 
@@ -149,7 +189,7 @@ public class SpellCastingManager {
         boolean success = IronsSpellsCompat.castSpell(entity, target, entity.level(), spellId, level);
 
         if (success && SpelledMobsConfig.isDebugLoggingEnabled()) {
-            SpelledMobs.LOGGER.info("{} 成功施放法术 {} (等级 {}) 目标: {}",
+            SpelledMobs.LOGGER.info("[SpelledMobs] {} 成功施放法术 {} (等级 {}) 目标: {}",
                     entity.getName().getString(),
                     spellId,
                     level,

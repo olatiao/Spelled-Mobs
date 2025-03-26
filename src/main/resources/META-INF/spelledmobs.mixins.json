@@ -4,12 +4,10 @@
   "package": "com.spelledmobs.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "spelledmobs.refmap.json",
-  "mixins": [
-    "ExampleMixin"
-  ],
+  "mixins": [],
   "client": [],
   "server": [],
   "injectors": {
     "defaultRequire": 1
   }
-} 
+}

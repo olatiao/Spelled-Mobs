@@ -7,7 +7,7 @@ import com.spelledmobs.SpelledMobs;
  */
 public class SpelledMobsConfig {
     // 是否启用调试日志
-    private static boolean debugLogging = false;
+    private static boolean debugLogging = true;
 
     // 是否启用命令反馈
     private static boolean commandFeedback = true;
