@@ -10,23 +10,27 @@
       "maxCastTime": 300,
       "chance": 0.5,
       "weight": 2,
-      "conditions": [
-        {
-          "type": "TARGET_DISTANCE",
-          "operator": "GREATER_THAN",
-          "numeric_value": 8.0
-        },
-        {
-          "type": "TARGET_DISTANCE",
-          "operator": "LESS_THAN_OR_EQUALS",
-          "numeric_value": 16.0
-        },
-        {
-          "type": "TARGET_TYPE",
-          "operator": "EQUALS",
-          "value": "minecraft:player"
-        }
-      ]
+      "conditions": []
+    },
+    {
+      "spellId": "fireball",
+      "minLevel": 1,
+      "maxLevel": 2,
+      "minCastTime": 200,
+      "maxCastTime": 300,
+      "chance": 0.5,
+      "weight": 2,
+      "conditions": []
+    },
+    {
+      "spellId": "fire_breath",
+      "minLevel": 1,
+      "maxLevel": 2,
+      "minCastTime": 200,
+      "maxCastTime": 300,
+      "chance": 0.5,
+      "weight": 2,
+      "conditions": []
     },
     {
       "spellId": "teleport",

@@ -3,7 +3,7 @@
   "checkInterval": 30,
   "spells": [
     {
-      "spellId": "raise_dead",
+      "spellId": "irons_spellbooks:raise_dead",
       "minLevel": 1,
       "maxLevel": 3,
       "minCastTime": 120,
@@ -19,7 +19,7 @@
       ]
     },
     {
-      "spellId": "lightning_lance",
+      "spellId": "irons_spellbooks:lightning_lance",
       "minLevel": 1,
       "maxLevel": 2,
       "minCastTime": 180,
@@ -40,7 +40,7 @@
       ]
     },
     {
-      "spellId": "devour",
+      "spellId": "irons_spellbooks:devour",
       "minLevel": 1,
       "maxLevel": 1,
       "minCastTime": 300,
@@ -61,7 +61,7 @@
       ]
     },
     {
-      "spellId": "ray_of_siphoning",
+      "spellId": "irons_spellbooks:ray_of_siphoning",
       "minLevel": 1,
       "maxLevel": 1,
       "minCastTime": 800,

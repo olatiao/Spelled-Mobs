@@ -24,6 +24,8 @@ import com.google.gson.JsonArray;
 import net.minecraftforge.fml.loading.FMLPaths;
 import java.nio.file.Path;
 import java.nio.file.Files;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 管理实体的法术施放数据
@@ -35,6 +37,78 @@ public class SpellCastingData {
     private final Map<ResourceLocation, List<SpellEntry>> entitySpells = new HashMap<>();
     // 存储每种实体的检查间隔
     private final Map<ResourceLocation, Integer> entityCheckIntervals = new HashMap<>();
+    
+    // 存储实体当前施法状态
+    private final Map<UUID, SpellCastingState> entityCastingStates = new ConcurrentHashMap<>();
+
+    /**
+     * 实体施法状态类
+     */
+    private static class SpellCastingState {
+        private final String spellId;
+        private final int level;
+        private final long startTime;
+        private final int duration;  // 持续时间(刻)
+        private boolean isCasting;
+
+        public SpellCastingState(String spellId, int level, int duration) {
+            this.spellId = spellId;
+            this.level = level;
+            this.startTime = System.currentTimeMillis();
+            this.duration = duration > 0 ? duration : 60; // 默认至少3秒
+            this.isCasting = true;
+            
+            SpelledMobs.LOGGER.debug("[SpelledMobs] 创建施法状态 - 法术: {}, 持续时间: {} 刻, 开始时间: {}", 
+                spellId, this.duration, this.startTime);
+        }
+
+        public boolean isFinished() {
+            // 如果手动停止施法
+            if (!isCasting) {
+                return true;
+            }
+            
+            // 计算已经经过的时间（毫秒）
+            long currentTime = System.currentTimeMillis();
+            long elapsed = currentTime - startTime;
+            
+            // 将持续时间从刻转换为毫秒 (1刻 = 50毫秒)
+            long durationMillis = duration * 50L;
+            
+            // 判断是否超过持续时间
+            boolean finished = elapsed >= durationMillis;
+            
+            if (finished) {
+                SpelledMobs.LOGGER.debug("[SpelledMobs] 法术 {} 已结束 - 持续时间: {} 毫秒, 实际持续: {} 毫秒", 
+                    spellId, durationMillis, elapsed);
+            }
+            
+            return finished;
+        }
+
+        public void stopCasting() {
+            this.isCasting = false;
+            SpelledMobs.LOGGER.debug("[SpelledMobs] 法术 {} 被手动停止", spellId);
+        }
+
+        public String getSpellId() {
+            return spellId;
+        }
+
+        public int getLevel() {
+            return level;
+        }
+        
+        public long getRemainingTime() {
+            if (!isCasting) {
+                return 0;
+            }
+            
+            long elapsed = System.currentTimeMillis() - startTime;
+            long durationMillis = duration * 50L;
+            return Math.max(0, durationMillis - elapsed);
+        }
+    }
 
     /**
      * 加载所有实体法术配置
@@ -414,6 +488,111 @@ public class SpellCastingData {
     }
 
     /**
+     * 开始实体施放法术
+     * @param entity 施法实体
+     * @param spellId 要施放的法术
+     * @param level 法术等级
+     * @param duration 持续时间(刻)，-1表示非持续性法术
+     */
+    public void startCasting(LivingEntity entity, String spellId, int level, int duration) {
+        if (entity == null || spellId == null) {
+            SpelledMobs.LOGGER.warn("[SpelledMobs] 尝试开始施法但实体或法术ID为空");
+            return;
+        }
+        
+        // 对于非持续性法术，不需要记录状态
+        if (duration <= 0) {
+            SpelledMobs.LOGGER.debug("[SpelledMobs] 法术 {} 不是持续性法术，不记录状态", spellId);
+            return;
+        }
+        
+        UUID entityId = entity.getUUID();
+        SpellCastingState state = new SpellCastingState(spellId, level, duration);
+        entityCastingStates.put(entityId, state);
+        
+        SpelledMobs.LOGGER.info("[SpelledMobs] 实体 {} 开始施放法术 {}, 等级 {}, 持续时间 {} 刻", 
+                entity.getName().getString(), spellId, level, duration);
+    }
+
+    /**
+     * 停止实体施放法术
+     * @param entity 施法实体
+     */
+    public void stopCasting(LivingEntity entity) {
+        if (entity == null) {
+            return;
+        }
+        
+        UUID entityId = entity.getUUID();
+        SpellCastingState state = entityCastingStates.get(entityId);
+        if (state != null) {
+            state.stopCasting();
+            SpelledMobs.LOGGER.debug("[SpelledMobs] 实体 {} 停止施放法术 {}", 
+                    entity.getName().getString(), state.getSpellId());
+        }
+    }
+
+    /**
+     * 检查实体是否正在施放法术
+     * @param entity 施法实体
+     * @return 是否正在施放法术
+     */
+    public boolean isCasting(LivingEntity entity) {
+        if (entity == null) {
+            return false;
+        }
+        
+        UUID entityId = entity.getUUID();
+        SpellCastingState state = entityCastingStates.get(entityId);
+        if (state == null) {
+            return false;
+        }
+        
+        // 检查法术是否已经结束
+        if (state.isFinished()) {
+            entityCastingStates.remove(entityId);
+            SpelledMobs.LOGGER.debug("[SpelledMobs] 实体 {} 的法术 {} 已结束", 
+                    entity.getName().getString(), state.getSpellId());
+            return false;
+        }
+        
+        return true;
+    }
+
+    /**
+     * 获取实体当前施放的法术ID
+     * @param entity 施法实体
+     * @return 法术ID，如果没有则返回null
+     */
+    public String getCurrentSpellId(LivingEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        
+        UUID entityId = entity.getUUID();
+        SpellCastingState state = entityCastingStates.get(entityId);
+        return state != null ? state.getSpellId() : null;
+    }
+
+    /**
+     * 清理实体施法状态
+     * @param entity 施法实体
+     */
+    public void cleanupEntityState(LivingEntity entity) {
+        if (entity == null) {
+            return;
+        }
+        
+        UUID entityId = entity.getUUID();
+        SpellCastingState oldState = entityCastingStates.remove(entityId);
+        
+        if (oldState != null) {
+            SpelledMobs.LOGGER.debug("[SpelledMobs] 清理实体 {} 的施法状态: {}", 
+                entity.getName().getString(), oldState.getSpellId());
+        }
+    }
+
+    /**
      * 获取下一个要施放的法术
      * 
      * @param entity 施法实体
@@ -421,6 +600,11 @@ public class SpellCastingData {
      */
     public SpellEntry getNextSpellToCast(LivingEntity entity) {
         if (!hasSpells(entity)) {
+            return null;
+        }
+        
+        // 检查实体是否已经在施放法术
+        if (isCasting(entity)) {
             return null;
         }
 
@@ -453,46 +637,38 @@ public class SpellCastingData {
         Level level = entity.level();
         SpellConditionContext context = new SpellConditionContext(entity, target, level);
 
-        // 根据权重和几率选择法术
-        List<SpellEntry> availableSpells = new ArrayList<>();
+        // 首先过滤出满足条件的法术
+        List<SpellEntry> eligibleSpells = new ArrayList<>();
         for (SpellEntry spell : spells) {
-            // 检查施法几率
-            float randomChance = RANDOM.nextFloat();
-            boolean passedChanceCheck = randomChance <= spell.getChance();
-
-            if (!passedChanceCheck) {
-                continue;
-            }
-
-            // 检查法术条件是否满足
+            // 只检查法术条件是否满足，不进行几率检查
             boolean conditionsMet = spell.checkConditions(context);
-
-            if (!conditionsMet) {
-                continue;
+            if (conditionsMet) {
+                eligibleSpells.add(spell);
             }
-
-            // 添加符合条件的法术
-            availableSpells.add(spell);
         }
 
-        if (availableSpells.isEmpty()) {
+        if (eligibleSpells.isEmpty()) {
             return null;
         }
 
-        // 根据权重随机选择一个法术
-        int totalWeight = availableSpells.stream().mapToInt(SpellEntry::getWeight).sum();
-        int randomWeight = RANDOM.nextInt(totalWeight) + 1;
-
-        int currentWeight = 0;
-        for (SpellEntry spell : availableSpells) {
-            currentWeight += spell.getWeight();
-            if (randomWeight <= currentWeight) {
-                return spell;
+        // 使用轮盘赌选择算法，考虑权重和几率
+        List<SpellEntry> weightedSpells = new ArrayList<>();
+        for (SpellEntry spell : eligibleSpells) {
+            // 将法术按权重和几率添加到加权列表中
+            // 例如，权重为2、几率为0.5的法术会有50%的几率被添加两次
+            if (RANDOM.nextFloat() <= spell.getChance()) {
+                for (int i = 0; i < spell.getWeight(); i++) {
+                    weightedSpells.add(spell);
+                }
             }
         }
 
-        // 默认返回第一个（理论上不会执行到这里）
-        return availableSpells.get(0);
+        if (weightedSpells.isEmpty()) {
+            return null;
+        }
+
+        // 从加权列表中随机选择一个法术
+        return weightedSpells.get(RANDOM.nextInt(weightedSpells.size()));
     }
 
     /**
